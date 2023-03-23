@@ -20,7 +20,7 @@ const projectsSchema = mongoose.Schema({
     required: true,
   },
   status: {
-    type: string,
+    type: String,
     default: "active",
     enum: ["active", "completed"],
   },
@@ -36,10 +36,10 @@ const projectsSchema = mongoose.Schema({
   },
 });
 
-projectsSchema.virtual("tasks", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "project",
-});
+// projectsSchema.virtual("tasks", {
+//   ref: "Task",
+//   localField: "_id",
+//   foreignField: "project",
+// });
 
 mongoose.model("Project", projectsSchema);
