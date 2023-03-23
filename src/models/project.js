@@ -22,18 +22,25 @@ const projectsSchema = mongoose.Schema({
   status: {
     type: String,
     default: "active",
-    enum: ["active", "completed"],
+    enum: ["active", "complete"],
   },
-  createdby: {
+  organizer: {
     type: ObjectId,
     ref: "Employee",
     required: true,
   },
-  tasks: {
-    type: ObjectId,
-    ref: "Task",
-    required: true,
-  },
+  tasks: [
+    {
+      type: ObjectId,
+      ref: "Task",
+    },
+  ],
+  contributors: [
+    {
+      type: ObjectId,
+      ref: "Employee",
+    },
+  ],
 });
 
 // projectsSchema.virtual("tasks", {
