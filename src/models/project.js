@@ -22,24 +22,31 @@ const projectsSchema = mongoose.Schema({
   status: {
     type: string,
     default: "active",
-    enum: ["active", "completed"],
+    enum: ["active", "complete"],
   },
-  createdby: {
+  organizer: {
     type: ObjectId,
     ref: "Employee",
     required: true,
   },
-  tasks: {
-    type: ObjectId,
-    ref: "Task",
-    required: true,
-  },
+  tasks: [
+    {
+      type: ObjectId,
+      ref: "Task",
+    },
+  ],
+  contributors: [
+    {
+      type: ObjectId,
+      ref: "Employee",
+    },
+  ],
 });
 
-projectsSchema.virtual("tasks", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "project",
-});
+// projectsSchema.virtual("tasks", {
+//   ref: "Task",
+//   localField: "_id",
+//   foreignField: "project",
+// });
 
 mongoose.model("Project", projectsSchema);
