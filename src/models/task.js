@@ -9,16 +9,12 @@ const tasksSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
-  },
-  startdate: {
-    type: Date,
-    required: true,
+    // required: true,
   },
   status: {
     type: string,
     default: "active",
-    enum: ["active", "complete"],
+    enum: ["active", "complete", "InProgress"],
   },
   assigneeId: {
     type: ObjectId,
