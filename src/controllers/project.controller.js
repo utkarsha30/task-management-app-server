@@ -25,12 +25,12 @@ exports.getProjects = async (req, res, next) => {
 //Create a new Project
 exports.createNewProject = async (req, res, next) => {
   try {
-    const project = new Project({
-      name: req.body.name,
-      organizer: req.employee._id,
-      contributors: req.body.contributors || [],
-      tasks: [],
-    });
+    const project = new Project(req.body);
+    // name: req.body.name,
+    // organizer: req.employee._id,
+    // contributors: req.body.contributors || [],
+    // tasks: [],
+
     await project.save();
     res.status(201).json(project);
   } catch (error) {
