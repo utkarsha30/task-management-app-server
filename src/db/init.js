@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", true);
 require("../models/project");
 require("../models/employee");
+require("../models/task");
 // require("../models/teams");
 const connect = async () => {
   try {
