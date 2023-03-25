@@ -2,7 +2,6 @@
 const Project = require("../models/project");
 const { Errors } = require("../constants");
 
-
 //Get all projects
 exports.getProjects = async (req, res, next) => {
   try {
@@ -12,9 +11,9 @@ exports.getProjects = async (req, res, next) => {
         { contributors: req.employee._id },
       ],
     })
-    .populate("organizer", "_id name")
-    .populate("contributors", "_id name")
-    .populate("tasks");
+      .populate("organizer", "_id name")
+      .populate("contributors", "_id name")
+      .populate("tasks");
     res.json(projects);
   } catch (error) {
     next(error);
@@ -22,7 +21,6 @@ exports.getProjects = async (req, res, next) => {
     // res.status(500).send(error);
   }
 };
-
 
 //Create a new Project
 exports.createNewProject = async (req, res, next) => {
@@ -42,34 +40,37 @@ exports.createNewProject = async (req, res, next) => {
   }
 };
 
-
 //Get a Single project by _id
-exports.getProjectById = async(req, res, next) => {
-  try{
-    const project = await Project.findOne({ _id : req.params.id, 
-    $or : [{
-      { organizer: req.employee._id },
-      { contributors: req.employee._id },
-      }]
+exports.getProjectById = async (req, res, next) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+      $or: [
+        { organizer: req.employee._id },
+        { contributors: req.employee._id },
+      ],
     })
-    .populate("organizer", "_id name")
-    .populate("contributors", "_id name")
-    .populate("tasks");
-    if(!project){
-      return res.status(404).json({error : "Project Not Found"});
+      .populate("organizer", "_id name")
+      .populate("contributors", "_id name")
+      .populate("tasks");
+    if (!project) {
+      return res.status(404).json({ error: "Project Not Found" });
     }
     res.json(project);
   } catch (error) {
     next(error);
   }
-}
+};
 
 //Update a Project by ID
 exports.updateProjectById = async (req, res, next) => {
   try {
-    const project = await Project.findOne({ _id: req.params.id, organizer: req.employee._id });
+    const project = await Project.findOne({
+      _id: req.params.id,
+      organizer: req.employee._id,
+    });
     if (!project) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: "Project not found" });
     }
     project.name = req.body.name;
     project.contributors = req.body.contributors || [];
@@ -80,18 +81,19 @@ exports.updateProjectById = async (req, res, next) => {
   }
 };
 
-
 //Delete a Project by ID
 exports.deleteProjectById = async (req, res, next) => {
   try {
-    const project = await Project.findOne({ _id: req.params.id, organizer: req.employee._id });
+    const project = await Project.findOne({
+      _id: req.params.id,
+      organizer: req.employee._id,
+    });
     if (!project) {
-       return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: "Project not found" });
     }
     await project.remove();
-    res.json({ message: 'Project deleted successfully' });
-    } catch (error) {
+    res.json({ message: "Project deleted successfully" });
+  } catch (error) {
     next(error);
   }
 };
-

@@ -6,6 +6,6 @@ router.get("/", projectCtrl.getProjects);
 router.post("/create", projectCtrl.createNewProject);
 router.get("/:id", projectCtrl.getProjectById);
 router.put("/:id", projectCtrl.updateProjectById);
-router.delete("/:id", projectCtrl / projectCtrl.deleteProjectById);
+router.delete("/:id", projectCtrl.deleteProjectById);
 
 module.exports = router;
