@@ -1,52 +1,47 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema.Types;
 
-const { ObjectId } = mongoose.Schema;
-
-const projectsSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  startdate: {
-    type: Date,
-    required: true,
-  },
-  enddate: {
-    type: Date,
-    required: true,
-  },
-  status: {
-    type: string,
-    default: "active",
-    enum: ["active", "complete"],
-  },
-  organizer: {
-    type: ObjectId,
-    ref: "Employee",
-    required: true,
-  },
-  tasks: [
-    {
-      type: ObjectId,
-      ref: "Task",
+const projectsSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-  contributors: [
-    {
+    description: {
+      type: String,
+    },
+    startdate: {
+      type: Date,
+      required: true,
+    },
+    enddate: {
+      type: Date,
+      required: true,
+    },
+    status: {
+      type: String,
+      default: "active",
+      enum: ["active", "complete"],
+    },
+    creator: {
       type: ObjectId,
       ref: "Employee",
+      required: true,
     },
-  ],
-});
-
-// projectsSchema.virtual("tasks", {
-//   ref: "Task",
-//   localField: "_id",
-//   foreignField: "project",
-// });
+    tasks: [
+      {
+        type: ObjectId,
+        ref: "Task",
+      },
+    ],
+    collaborators: [
+      {
+        type: ObjectId,
+        ref: "Employee",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 mongoose.model("Project", projectsSchema);
