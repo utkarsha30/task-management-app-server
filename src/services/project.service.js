@@ -1,5 +1,3 @@
-const project = require("../models/project");
-const { findByIdAndUpdate } = require("../models/project");
 const Project = require("../models/project");
 
 exports.createProject = async (projectData) => {
