@@ -49,4 +49,4 @@ const projectsSchema = mongoose.Schema({
 //   foreignField: "project",
 // });
 
-mongoose.model("Project", projectsSchema);
+module.exports = mongoose.model("Project", projectsSchema);
