@@ -1,4 +1,5 @@
-const Task = require("./models/task");
+const task = require("../models/task");
+const Task = require("../models/task");
 
 exports.createTask = async (projectId, taskData) => {
   const task = new Task(taskData);
@@ -16,15 +17,18 @@ exports.getTaskById = async (taskId) => {
 };
 
 exports.updateTask = async (taskId, taskData) => {
-  const task = await getTaskById(taskId);
-  Object.assign(task, taskData);
-  await task.save();
-  return task;
+  // const task = await getTaskById(taskId);
+  // Object.assign(task, taskData);
+  // await task.save();
+  // return task;
+
+  return await Task.findByIdAndUpdate(taskId, taskData, { new: true });
 };
 
 exports.deleteTask = async (taskId) => {
-  const task = await getTaskById(taskId);
-  await task.remove();
+  // const task = await getTaskById(taskId);
+  // await task.remove();
+  return await task.findByIdAndDelete(taskId);
 };
 
 // exports.addAssignee = async (taskId, assignedToId) => {
