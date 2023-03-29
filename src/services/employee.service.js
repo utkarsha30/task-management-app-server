@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Employee = mongoose.model("Employee");
 const getEmployeeDetails = (id)=>{
-    return Employee.findById(id);
+    return Employee.findById({id},{password:0});
 }
 const registerNewEmployee = (details)=>{
     return Employee.create(details);
