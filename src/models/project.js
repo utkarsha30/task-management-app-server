@@ -27,7 +27,7 @@ const projectsSchema = mongoose.Schema({
   organizer: {
     type: ObjectId,
     ref: "Employee",
-    required: true,
+    // required: true,
   },
   tasks: [
     {
