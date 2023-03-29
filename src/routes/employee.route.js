@@ -1,7 +1,7 @@
 const { Router } = require("express");
-const employeeCtrl = require("../controllers/auth.controller");
+const employeeCtrl = require("../controllers/employee.controller");
+const { authenticate, authorize } = require("../middleware/auth");
 const router = Router();
 
-router.post("/register",employeeCtrl.registerNewEmployee);
-router.post("/login",employeeCtrl.validateEmployee);
+router.get("/",authenticate,employeeCtrl.findEmployee);
 module.exports = router;

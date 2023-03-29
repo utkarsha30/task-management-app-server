@@ -17,7 +17,8 @@ app.get("/", (req, res) => {
   });
 
 //routes
-app.use("/api/auth",require("./routes/employee.route") );
+app.use("/api/auth",require("./routes/auth.route") );
+app.use("/api/employee",require("./routes/employee.route") );
 app.use(require("./middleware/errors").resourceNotFound);
 app.use(require("./middleware/errors").errorHandler);
 const PORT = process.env.PORT || 5001;

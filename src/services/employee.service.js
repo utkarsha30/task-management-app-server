@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Employee = mongoose.model("Employee");
+const getEmployeeDetails = (id)=>{
+    return Employee.findById(id);
+}
 const registerNewEmployee = (details)=>{
     return Employee.create(details);
 }
@@ -25,5 +28,6 @@ const validateEmployee = async(credentials)=>{
 }
 module.exports={
     registerNewEmployee,
-    validateEmployee
+    validateEmployee,
+    getEmployeeDetails
 }
