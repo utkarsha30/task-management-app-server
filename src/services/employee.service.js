@@ -2,7 +2,13 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Employee = mongoose.model("Employee");
 const getEmployeeDetails = (id)=>{
-    return Employee.findById({id},{password:0});
+    return Employee.findById({_id:id},{password:0});
+}
+const updateEmployeeDetails = (id,details)=>{
+  return Employee.findByIdAndUpdate(id,details, {
+    returnOriginal: false,
+    runValidators: true,
+  });
 }
 const registerNewEmployee = (details)=>{
     return Employee.create(details);
@@ -29,5 +35,6 @@ const validateEmployee = async(credentials)=>{
 module.exports={
     registerNewEmployee,
     validateEmployee,
-    getEmployeeDetails
+    getEmployeeDetails,
+    updateEmployeeDetails
 }

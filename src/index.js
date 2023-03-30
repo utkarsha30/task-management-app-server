@@ -1,5 +1,8 @@
 require("dotenv/config");
 const express = require("express");
+const fileUpload = require("express-fileupload");
+// var multer = require('multer');
+// var upload = multer();
 const cors = require("cors");
 // connecting to database
 const { connect } = require("./db/init");
@@ -7,6 +10,16 @@ const { connect } = require("./db/init");
 const app = express();
 //to avoid cors policy error
 app.use(cors({ origin: "*" }));
+// for parsing multipart/form-data
+// app.use(upload.array()); 
+// app.use(express.static('public'));
+
+// to allow file upload for the cloudnary
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 //for request body data
 app.use(express.json());
 

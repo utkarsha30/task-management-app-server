@@ -25,6 +25,10 @@ const employeesSchema = mongoose.Schema({
     userId: String,
     email: String,
   },
+  profilepic:{
+    type:String,
+    default : "https://res.cloudinary.com/debvb6ifr/image/upload/v1680182714/TaskManagementProfilePics/profilepic_akjf1e.jpg"
+  },
   projects: [
     {
       type: ObjectId,

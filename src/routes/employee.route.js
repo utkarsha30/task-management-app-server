@@ -4,4 +4,5 @@ const { authenticate, authorize } = require("../middleware/auth");
 const router = Router();
 
 router.get("/",authenticate,employeeCtrl.findEmployee);
+router.patch("/update",authenticate,employeeCtrl.updateEmployeeDetails);
 module.exports = router;
