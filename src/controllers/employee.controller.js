@@ -23,6 +23,7 @@ const findEmployee = async(req,res,next)=>{
 }
 const updateEmployeeDetails = async(req,res,next)=>{
     const loggedinUser = res.locals.claims;
+    const {name,managerId} = req.body;
     let file = '';
     try{
         if(req.files.profilepic)
@@ -37,13 +38,16 @@ const updateEmployeeDetails = async(req,res,next)=>{
                   if (err) {
                     console.log(err);
                   }
-                  console.log(image);
+                  // console.log(image);
                 }
               );
               req.files.profilepic = result.secure_url;
               }        
-       
-        const updatedProfile = await employeeService.updateEmployeeDetails(loggedinUser._id,req.files);
+              const update = {};
+              if(req.body.name) update.name = req.body.name;
+              if(req.body.managerId) update.name = req.body.managerId;
+              if(req.files.profilepic) update.profilepic = req.files.profilepic
+        const updatedProfile = await employeeService.updateEmployeeDetails(loggedinUser._id,update);
               if (updatedProfile === null) {
                       const error = new Error(`Employee with id = ${loggedinUser._id} does not exist`);
                       error.name = Errors.NotFound;
