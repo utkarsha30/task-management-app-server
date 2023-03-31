@@ -1,14 +1,11 @@
-const { default: mongoose } = require("mongoose");
 const Task = require("../models/task");
-//const mongoose = require("mongoose");
-
+const mongoose = require("mongoose");
 exports.createTask = async (projectId, taskData) => {
   const task = new Task(taskData);
   task.projectId = projectId;
   await task.save();
   return task;
 };
-
 exports.getTaskById = async (taskId) => {
   const task = await Task.findById(taskId);
   if (!task) {
@@ -17,33 +14,8 @@ exports.getTaskById = async (taskId) => {
   return task;
 };
 
-exports.updateTask = async (taskId, assigneeId, taskData) => {
-  // const task = await getTaskById(taskId);
-  // Object.assign(task, taskData);
-  // await task.save();
-  // return task;
-
-  const query = { _id: taskId, assigneeId };
-  const options = { new: true };
-
-  const updatedTask = await Task.findByIdAndUpdate(query, taskData, options);
-  if (!updatedTask) {
-    throw new Error("Task not found or unauthorized");
-  }
-  return updatedTask;
-
-  // const assigneeid = new mongoose.Types.ObjectId(assigneeId);
-  // const task = await Task.findById(taskId);
-  // if (!task) {
-  //   throw new Error("Task not found");
-  // }
-  // console.log(task.assignedTo);
-  // console.log(assigneeid);
-  // if (task.assignedTo === assigneeid) {
-  //   throw new Error("Unauthorized");
-  // } else {
-  //   return await Task.findByIdAndUpdate(taskId, taskData, { new: true });
-  // }
+exports.updateTask = async (taskId, taskData) => {
+  return Task.findByIdAndUpdate(taskId, taskData);
 };
 
 exports.deleteTask = async (taskId) => {
@@ -58,16 +30,7 @@ exports.deleteTask = async (taskId) => {
 //   return await project.save();
 // };
 
-// exports.validateTaskByAssigneeId = async (taskId, assigneeId) => {
-//   // const task = await Task.findById(taskId);
-//   // if (!task) {
-//   //   throw new Error("Task not found");
-//   // }
-//   // if (task.assigneeId !== assigneeId) {
-//   //   throw new Error("Unauthorized");
-//   // }
-//   // return task;
-
-//   const _id = new mongoose.Types.ObjectId(taskId);
-//   return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
-// };
+exports.validateTaskByAssigneeId = async (taskId, assigneeId) => {
+  const _id = new mongoose.Types.ObjectId(taskId);
+  return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
+};

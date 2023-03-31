@@ -21,26 +21,30 @@ exports.getTaskById = async (req, res) => {
 
 exports.updateTask = async (req, res, next) => {
   const loggedinUser = res.locals.claims;
-  try {
-    // const validAssignee = await taskService.validateTaskByAssigneeId(
-    //   req.params.taskId,
-    //   loggedinUser._id
-    // );
-    // console.log(validAssignee);
-    // if (validAssignee === null) {
-    //   const error = new Error(`Invalid Task`);
-    //   error.name = Errors.NotFound;
-    //   return next(error);
-    // }
-
-    const task = await taskService.updateTask(
-      req.params.taskId,
-      loggedinUser._id,
-      req.body
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error(
+      `Request body is missing, and needs to create new project`
     );
+    error.name = Errors.BadRequest;
+    return next(error);
+  }
+  try {
+    const validAssignee = await taskService.validateTaskByAssigneeId(
+      req.params.taskId,
+      loggedinUser._id
+    );
+    if (validAssignee.length === 0) {
+      const error = new Error(
+        `Task ${req.params.taskId} is not assigend to employee ${loggedinUser._id}`
+      );
+      error.name = Errors.NotFound;
+      return next(error);
+    }
+    const task = await taskService.updateTask(req.params.taskId, req.body);
+    console.log(task);
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+   next(error);
   }
 };
 
