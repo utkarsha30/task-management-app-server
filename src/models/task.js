@@ -25,6 +25,11 @@ const tasksSchema = mongoose.Schema({
     ref: "Project",
     required: true,
   },
+  organizer : {
+    type: ObjectId,
+    ref: "Employee",
+    required: true,
+  }
   // createdBy: {
   //   type: ObjectID,
   //   ref: "Employee",
