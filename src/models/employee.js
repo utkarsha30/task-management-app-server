@@ -1,49 +1,58 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const { ObjectId } = mongoose.Schema.Types;
-const employeesSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-    default: "employee",
-    enum: ["admin", "employee"],
-  },
-  managerId: {
-    userId: String,
-    email: String,
-  },
-  projects: [
-    {
-      type: ObjectId,
-      ref: "Project",
+const employeesSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-});
-const passwordPat = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
-employeesSchema.path("password").validate(function (value) {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      default: 'employee',
+      enum: ['admin', 'employee'],
+    },
+    managerId: {
+      userId: String,
+      email: String,
+    },
+    profilepic: {
+      type: String,
+      default:
+        'https://res.cloudinary.com/debvb6ifr/image/upload/v1680182714/TaskManagementProfilePics/profilepic_akjf1e.jpg',
+    },
+    projects: [
+      {
+        type: ObjectId,
+        ref: 'Project',
+      },
+    ],
+  },
+  { timestamps: true }
+);
+const passwordPat =
+  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+employeesSchema.path('password').validate(function (value) {
   return passwordPat.test(value);
-}, "Password must have at least 1 character , 1 digit, 1 special characters, and should be atleast 8 characters in length.");
+}, 'Password must have at least 1 character , 1 digit, 1 special characters, and should be atleast 8 characters in length.');
 
 // decides the "Strength" of the salt (should not be higher as salting will take long time and occupy CPU time (blocking) - nothing else will execute in the app in that time)
 const SALT_FACTOR = 10;
-employeesSchema.pre("save", function (done) {
+employeesSchema.pre('save', function (done) {
   // DO NOT use arrow function here
   const user = this; // const user -> new User()
 
-  if (!user.isModified("password")) {
+  if (!user.isModified('password')) {
     done();
     return;
   }
@@ -64,4 +73,4 @@ employeesSchema.pre("save", function (done) {
     });
   });
 });
-mongoose.model("Employee", employeesSchema);
+mongoose.model('Employee', employeesSchema);
