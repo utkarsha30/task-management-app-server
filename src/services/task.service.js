@@ -22,18 +22,28 @@ exports.updateTask = async (taskId, assigneeId, taskData) => {
   // Object.assign(task, taskData);
   // await task.save();
   // return task;
-  const assigneeid = new mongoose.Types.ObjectId(assigneeId);
-  const task = await Task.findById(taskId);
-  if (!task) {
-    throw new Error("Task not found");
+
+  const query = { _id: taskId, assigneeId };
+  const options = { new: true };
+
+  const updatedTask = await Task.findByIdAndUpdate(query, taskData, options);
+  if (!updatedTask) {
+    throw new Error("Task not found or unauthorized");
   }
-  console.log(task.assignedTo);
-  console.log(assigneeid);
-  if (task.assignedTo === assigneeid) {
-    throw new Error("Unauthorized");
-  } else {
-    return await Task.findByIdAndUpdate(taskId, taskData, { new: true });
-  }
+  return updatedTask;
+
+  // const assigneeid = new mongoose.Types.ObjectId(assigneeId);
+  // const task = await Task.findById(taskId);
+  // if (!task) {
+  //   throw new Error("Task not found");
+  // }
+  // console.log(task.assignedTo);
+  // console.log(assigneeid);
+  // if (task.assignedTo === assigneeid) {
+  //   throw new Error("Unauthorized");
+  // } else {
+  //   return await Task.findByIdAndUpdate(taskId, taskData, { new: true });
+  // }
 };
 
 exports.deleteTask = async (taskId) => {
