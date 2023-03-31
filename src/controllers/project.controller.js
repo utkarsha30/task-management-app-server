@@ -2,11 +2,20 @@ const projectService = require("../services/project.service");
 const { Errors } = require("../constants");
 
 exports.createProject = async (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error(
+      `Request body is missing, and needs to create new project`
+    );
+    error.name = Errors.BadRequest;
+    return next(error);
+  }
   try {
+    const loggedinUser = res.locals.claims;
+    req.body.organizer = loggedinUser._id;
     const project = await projectService.createProject(req.body);
     res.status(201).json(project);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
