@@ -5,7 +5,7 @@ const { Errors } = require('../constants');
 const registerNewEmployee = async (req, res, next) => {
   if (Object.keys(req.body).length === 0) {
     const error = new Error(
-      `Request body is missing, and needs to to register new employee`
+      `Request body is missing, and needs to register new employee`
     );
     error.name = Errors.BadRequest;
     return next(error);
