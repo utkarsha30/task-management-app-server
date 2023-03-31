@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 const taskService = require('../services/task.service');
 const { Errors } = require('../constants');
+=======
+const taskService = require("../services/task.service");
+const { Errors } = require("../constants");
+>>>>>>> bc71801d552503235670ef94444d99511aa3543e
 
 exports.createTask = async (req, res) => {
   try {
@@ -24,6 +29,7 @@ exports.getTaskById = async (req, res) => {
 
 exports.updateTask = async (req, res, next) => {
   const loggedinUser = res.locals.claims;
+<<<<<<< HEAD
   if (Object.keys(req.body).length === 0) {
     const error = new Error(
       `Request body is missing, and needs to create new project`
@@ -48,6 +54,25 @@ exports.updateTask = async (req, res, next) => {
       req.body
     );
     console.log(task);
+=======
+  try {
+    // const validAssignee = await taskService.validateTaskByAssigneeId(
+    //   req.params.taskId,
+    //   loggedinUser._id
+    // );
+    // console.log(validAssignee);
+    // if (validAssignee === null) {
+    //   const error = new Error(`Invalid Task`);
+    //   error.name = Errors.NotFound;
+    //   return next(error);
+    // }
+
+    const task = await taskService.updateTask(
+      req.params.taskId,
+      loggedinUser._id,
+      req.body
+    );
+>>>>>>> bc71801d552503235670ef94444d99511aa3543e
     res.status(200).json(task);
   } catch (error) {
     next(error);

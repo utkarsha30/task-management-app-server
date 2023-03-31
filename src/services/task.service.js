@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 const Task = require('../models/task');
 const mongoose = require('mongoose');
+=======
+const { default: mongoose } = require("mongoose");
+const Task = require("../models/task");
+//const mongoose = require("mongoose");
+>>>>>>> bc71801d552503235670ef94444d99511aa3543e
 
 exports.createTask = async (projectId, taskData) => {
   const task = new Task(taskData);
@@ -15,8 +21,28 @@ exports.getTaskById = async (taskId) => {
   return task;
 };
 
+<<<<<<< HEAD
 exports.updateTask = async (taskId, taskData) => {
   return Task.findByIdAndUpdate(taskId, taskData);
+=======
+exports.updateTask = async (taskId, assigneeId, taskData) => {
+  // const task = await getTaskById(taskId);
+  // Object.assign(task, taskData);
+  // await task.save();
+  // return task;
+  const assigneeid = new mongoose.Types.ObjectId(assigneeId);
+  const task = await Task.findById(taskId);
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  console.log(task.assignedTo);
+  console.log(assigneeid);
+  if (task.assignedTo === assigneeid) {
+    throw new Error("Unauthorized");
+  } else {
+    return await Task.findByIdAndUpdate(taskId, taskData, { new: true });
+  }
+>>>>>>> bc71801d552503235670ef94444d99511aa3543e
 };
 
 exports.deleteTask = async (taskId) => {
@@ -31,7 +57,23 @@ exports.deleteTask = async (taskId) => {
 //   return await project.save();
 // };
 
+<<<<<<< HEAD
 exports.validateTaskByAssigneeId = async (taskId, assigneeId) => {
   const _id = new mongoose.Types.ObjectId(taskId);
   return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
 };
+=======
+// exports.validateTaskByAssigneeId = async (taskId, assigneeId) => {
+//   // const task = await Task.findById(taskId);
+//   // if (!task) {
+//   //   throw new Error("Task not found");
+//   // }
+//   // if (task.assigneeId !== assigneeId) {
+//   //   throw new Error("Unauthorized");
+//   // }
+//   // return task;
+
+//   const _id = new mongoose.Types.ObjectId(taskId);
+//   return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
+// };
+>>>>>>> bc71801d552503235670ef94444d99511aa3543e
