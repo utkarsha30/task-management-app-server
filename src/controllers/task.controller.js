@@ -1,4 +1,5 @@
 const taskService = require("../services/task.service");
+const { Errors } = require("../constants");
 
 exports.createTask = async (req, res) => {
   try {
@@ -18,8 +19,19 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
-exports.updateTask = async (req, res) => {
+exports.updateTask = async (req, res, next) => {
+  const loggedinUser = res.locals.claims;
   try {
+    const validAssignee = await taskService.validateTaskByAssigneeId(
+      req.params.taskId,
+      loggedinUser._id
+    );
+    console.log(validAssignee);
+    if (validAssignee === null) {
+      const error = new Error(`Invalid Task`);
+      error.name = Errors.NotFound;
+      return next(error);
+    }
     const task = await taskService.updateTask(req.params.taskId, req.body);
     res.status(200).json(task);
   } catch (error) {
