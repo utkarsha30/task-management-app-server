@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const Employee = mongoose.model('Employee');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const Employee = mongoose.model("Employee");
 const getEmployeeDetails = (id) => {
   return Employee.findById({ _id: id }, { password: 0 });
 };
@@ -20,10 +20,7 @@ const validateEmployee = async (credentials) => {
   if (!employee) {
     return null;
   }
-  const isMatch = await bcrypt.compare(
-    credentials.password,
-    employee.password
-  );
+  const isMatch = await bcrypt.compare(credentials.password, employee.password);
 
   if (!isMatch) {
     return null;

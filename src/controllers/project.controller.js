@@ -1,99 +1,71 @@
-// const projectService = require("../services/project.service");
-const Project = require("../models/project");
+const projectService = require("../services/project.service");
 const { Errors } = require("../constants");
 
-//Get all projects
-exports.getProjects = async (req, res, next) => {
-  try {
-    const projects = await Project.find({
-      $or: [
-        { organizer: req.employee._id },
-        { contributors: req.employee._id },
-      ],
-    })
-      .populate("organizer", "_id name")
-      .populate("contributors", "_id name")
-      .populate("tasks");
-    res.json(projects);
-  } catch (error) {
-    next(error);
-    // console.error(error);
-    // res.status(500).send(error);
+exports.createProject = async (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error(
+      `Request body is missing, and needs to create new project`
+    );
+    error.name = Errors.BadRequest;
+    return next(error);
   }
-};
-
-//Create a new Project
-exports.createNewProject = async (req, res, next) => {
   try {
-    const project = new Project(req.body);
-    // name: req.body.name,
-    // organizer: req.employee._id,
-    // contributors: req.body.contributors || [],
-    // tasks: [],
-
-    await project.save();
+    const loggedinUser = res.locals.claims;
+    req.body.organizer = loggedinUser._id;
+    const project = await projectService.createProject(req.body);
     res.status(201).json(project);
   } catch (error) {
-    // console.error(error);
-    // res.status(500).send(error);
     next(error);
   }
 };
 
-//Get a Single project by _id
-exports.getProjectById = async (req, res, next) => {
+exports.getProjectById = async (req, res) => {
   try {
-    const project = await Project.findOne({
-      _id: req.params.id,
-      $or: [
-        { organizer: req.employee._id },
-        { contributors: req.employee._id },
-      ],
-    })
-      .populate("organizer", "_id name")
-      .populate("contributors", "_id name")
-      .populate("tasks");
-    if (!project) {
-      return res.status(404).json({ error: "Project Not Found" });
-    }
-    res.json(project);
+    const project = await projectService.getProjectById(req.params.id);
+    res.status(200).json(project);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-//Update a Project by ID
-exports.updateProjectById = async (req, res, next) => {
+exports.updateProject = async (req, res) => {
   try {
-    const project = await Project.findOne({
-      _id: req.params.id,
-      organizer: req.employee._id,
-    });
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
-    }
-    project.name = req.body.name;
-    project.contributors = req.body.contributors || [];
-    await project.save();
-    res.json(project);
+    const project = await projectService.updateProject(req.params.id, req.body);
+    res.status(200).json(project);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-//Delete a Project by ID
-exports.deleteProjectById = async (req, res, next) => {
+exports.deleteProject = async (req, res) => {
   try {
-    const project = await Project.findOne({
-      _id: req.params.id,
-      organizer: req.employee._id,
-    });
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
-    }
-    await project.remove();
-    res.json({ message: "Project deleted successfully" });
+    await projectService.deleteProject(req.params.id);
+    res.status(204).end();
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.addContributor = async (req, res) => {
+  try {
+    const project = await projectService.addContributor(
+      req.params.id,
+      req.body.contributorId
+    );
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.removeContributor = async (req, res) => {
+  try {
+    const project = await projectService.removeContributor(
+      req.params.id,
+      req.body.contributorId
+    );
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

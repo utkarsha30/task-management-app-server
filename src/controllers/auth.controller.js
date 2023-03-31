@@ -40,6 +40,7 @@ const validateEmployee = async (req, res, next) => {
       _id: employee._id,
       name: employee.name,
       email: employee.email,
+      role: employee.role,
     };
     JWT.sign(
       claims,
