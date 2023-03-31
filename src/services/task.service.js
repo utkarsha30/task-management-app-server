@@ -38,7 +38,16 @@ exports.deleteTask = async (taskId) => {
 //   return await project.save();
 // };
 
-exports.validateTaskByAssigneeId = (taskId, assigneeId) => {
-  const _id = new mongoose.Types.ObjectId(taskId);
-  return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
+exports.validateTaskByAssigneeId = async (taskId, assigneeId) => {
+  const task = await Task.findById(taskId);
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  if (task.assigneeId !== assigneeId) {
+    throw new Error("Unauthorized");
+  }
+  return task;
+
+  // const _id = new mongoose.Types.ObjectId(taskId);
+  // return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
 };
