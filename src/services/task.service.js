@@ -1,4 +1,5 @@
-const Task = require("../models/task");
+const Task = require('../models/task');
+const mongoose = require('mongoose');
 
 exports.createTask = async (projectId, taskData) => {
   const task = new Task(taskData);
@@ -6,7 +7,6 @@ exports.createTask = async (projectId, taskData) => {
   await task.save();
   return task;
 };
-
 exports.getTaskById = async (taskId) => {
   const task = await Task.findById(taskId);
   if (!task) {
@@ -16,12 +16,7 @@ exports.getTaskById = async (taskId) => {
 };
 
 exports.updateTask = async (taskId, taskData) => {
-  // const task = await getTaskById(taskId);
-  // Object.assign(task, taskData);
-  // await task.save();
-  // return task;
-
-  return await Task.findByIdAndUpdate(taskId, taskData, { new: true });
+  return Task.findByIdAndUpdate(taskId, taskData);
 };
 
 exports.deleteTask = async (taskId) => {
@@ -35,4 +30,8 @@ exports.deleteTask = async (taskId) => {
 //   task.assignedTo.push(assignedToId);
 //   return await project.save();
 // };
- 
+
+exports.validateTaskByAssigneeId = async (taskId, assigneeId) => {
+  const _id = new mongoose.Types.ObjectId(taskId);
+  return Task.find({ $and: [{ _id }, { assignedTo: assigneeId }] });
+};

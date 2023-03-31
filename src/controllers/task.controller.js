@@ -1,8 +1,12 @@
-const taskService = require("../services/task.service");
+const taskService = require('../services/task.service');
+const { Errors } = require('../constants');
 
 exports.createTask = async (req, res) => {
   try {
-    const task = await taskService.createTask(req.params.id, req.body);
+    const task = await taskService.createTask(
+      req.params.id,
+      req.body
+    );
     res.status(201).json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -18,12 +22,35 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
-exports.updateTask = async (req, res) => {
+exports.updateTask = async (req, res, next) => {
+  const loggedinUser = res.locals.claims;
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error(
+      `Request body is missing, and needs to create new project`
+    );
+    error.name = Errors.BadRequest;
+    return next(error);
+  }
   try {
-    const task = await taskService.updateTask(req.params.taskId, req.body);
+    const validAssignee = await taskService.validateTaskByAssigneeId(
+      req.params.taskId,
+      loggedinUser._id
+    );
+    if (validAssignee.length === 0) {
+      const error = new Error(
+        `Task ${req.params.taskId} is not assigend to employee ${loggedinUser._id}`
+      );
+      error.name = Errors.NotFound;
+      return next(error);
+    }
+    const task = await taskService.updateTask(
+      req.params.taskId,
+      req.body
+    );
+    console.log(task);
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
