@@ -19,10 +19,12 @@ router.post(
   projectCtrl.addContributor
 );
 router.delete(
+  
   "/:id/contributors",
   authenticate,
   authorize("admin"),
   projectCtrl.removeContributor
 );
+
 
 module.exports = router;

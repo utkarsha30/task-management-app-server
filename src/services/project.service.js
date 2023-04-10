@@ -1,4 +1,5 @@
 const Project = require("../models/project");
+const mongoose = require("mongoose");
 
 exports.createProject = async (projectData) => {
   const project = new Project(projectData);
@@ -30,4 +31,9 @@ exports.removeContributor = async (projectId, contributorId) => {
   const project = await Project.findById(projectId);
   project.contributors.pull(contributorId);
   return await project.save();
+};
+
+exports.validateProjectByOrganizerId = async (projectId, organizerId) => {
+  const _id = new mongoose.Types.ObjectId(projectId);
+  return Project.find({ $and: [{ _id }, { organizer: organizerId }] });
 };

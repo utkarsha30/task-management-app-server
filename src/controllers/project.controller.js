@@ -1,7 +1,7 @@
 const projectService = require("../services/project.service");
 const { Errors } = require("../constants");
 
-exports.createProject = async (req, res) => {
+exports.createProject = async (req, res, next) => {
   if (Object.keys(req.body).length === 0) {
     const error = new Error(
       `Request body is missing, and needs to create new project`
@@ -28,12 +28,33 @@ exports.getProjectById = async (req, res) => {
   }
 };
 
-exports.updateProject = async (req, res) => {
+exports.updateProject = async (req, res, next) => {
+  const loggedinUser = res.locals.claims;
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error(
+      `Request body is missing, and needs to create new project`
+    );
+    error.name = Errors.BadRequest;
+    return next(error);
+  }
   try {
+    const validOrganizer = await projectService.validateProjectByOrganizerId(
+      req.params.id,
+      loggedinUser._id
+    );
+    if (validOrganizer.length === 0) {
+      const error = new Error(
+        `Task ${req.params.id} is not
+         assigend to employee ${loggedinUser._id}`
+      );
+      error.name = Errors.NotFound;
+      return next(error);
+    }
+
     const project = await projectService.updateProject(req.params.id, req.body);
     res.status(200).json(project);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
@@ -48,9 +69,11 @@ exports.deleteProject = async (req, res) => {
 
 exports.addContributor = async (req, res) => {
   try {
+    const loggedinUser = res.locals.claims;
+    req.body.organizer = loggedinUser._id;
     const project = await projectService.addContributor(
       req.params.id,
-      req.body.contributorId
+      req.body
     );
     res.status(200).json(project);
   } catch (error) {
